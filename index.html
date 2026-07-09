@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geoportal Catastral - Zamora</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="styles.css?v=1" />
+</head>
+<body>
+    <div id="loading">
+        <div class="spinner"></div>
+        <p>Cargando datos catastrales...</p>
+    </div>
+    <div id="map"></div>
+
+    <div id="title-bar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Geoportal Catastral · Zamora</span>
+        <button id="btn-reportar" class="title-btn">Reportar</button>
+        <button id="btn-pdf" class="title-btn title-btn-secondary">PDF</button>
+    </div>
+
+    <div id="report-panel" class="panel-hidden">
+        <div class="panel-header">
+            <span>Reportar un problema</span>
+            <button id="btn-cerrar-panel">&times;</button>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="tipo">Tipo de problema</label>
+                <select id="tipo" required>
+                    <option value="">Selecciona un tipo...</option>
+                    <option value="bache">Bache en la via</option>
+                    <option value="alumbrado">Alumbrado publico dañado</option>
+                    <option value="basura">Acumulacion de basura</option>
+                    <option value="alcantarillado">Alcantarillado tapado</option>
+                    <option value="vereda">Vereda rota</option>
+                    <option value="senaletica">Señaletica dañada</option>
+                    <option value="arbol">Arbol caido o riesgo</option>
+                    <option value="inundacion">Inundacion</option>
+                    <option value="vandalismo">Vandalismo o grafiti</option>
+                    <option value="otro">Otro</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="comentario">Comentario (opcional)</label>
+                <textarea id="comentario" placeholder="Describe el problema con detalles..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Ubicacion (haz clic en el mapa)</label>
+                <div class="coords-row">
+                    <input type="text" id="latitud" placeholder="Latitud" readonly>
+                    <input type="text" id="longitud" placeholder="Longitud" readonly>
+                </div>
+            </div>
+            <button class="btn-enviar" id="btn-enviar" disabled>Enviar reporte</button>
+            <div class="form-footer">Los datos se enviaran de forma anonima</div>
+        </div>
+        <div class="panel-success" id="panel-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <h3>Reporte enviado</h3>
+            <p>Gracias por contribuir a mejorar Zamora.</p>
+            <button class="btn-nuevo" onclick="resetForm()">Reportar otro</button>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="app.js?v=1"></script>
+</body>
+</html>
