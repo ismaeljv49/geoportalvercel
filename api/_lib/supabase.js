@@ -1,7 +1,7 @@
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
-module.exports = async function query(endpoint, options = {}) {
+export default async function query(endpoint, options = {}) {
     const url = `${SUPABASE_URL}${endpoint}`;
     const res = await fetch(url, {
         ...options,
