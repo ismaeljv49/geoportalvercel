@@ -1,4 +1,4 @@
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
     const checks = {
         supabase_url_set: !!process.env.SUPABASE_URL,
         supabase_key_set: !!process.env.SUPABASE_KEY,

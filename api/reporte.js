@@ -1,6 +1,6 @@
-import query from './_lib/supabase.js';
+const query = require('./_lib/supabase.js');
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     if (req.method !== 'PATCH') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
