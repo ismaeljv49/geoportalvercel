@@ -1,22 +1,27 @@
-import query from './_lib/supabase.js';
+const query = require('./_lib/supabase.js');
 
-export async function PATCH(request) {
+module.exports = async function handler(req, res) {
+    if (req.method !== 'PATCH') {
+        return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    const { id, estado } = req.body;
+    if (!id || !estado) {
+        return res.status(400).json({ error: 'id and estado are required' });
+    }
+
+    const validos = ['pendiente', 'en_proceso', 'resuelto'];
+    if (validos.indexOf(estado) === -1) {
+        return res.status(400).json({ error: 'estado must be one of: ' + validos.join(', ') });
+    }
+
     try {
-        const body = await request.json();
-        const { id, estado } = body;
-        if (!id || !estado) {
-            return Response.json({ error: 'id and estado are required' }, { status: 400 });
-        }
-        const validos = ['pendiente', 'en_proceso', 'resuelto'];
-        if (!validos.includes(estado)) {
-            return Response.json({ error: `estado must be one of: ${validos.join(', ')}` }, { status: 400 });
-        }
-        const data = await query(`reportes_ciudadanos?id=eq.${id}`, {
+        const data = await query('reportes_ciudadanos?id=eq.' + id, {
             method: 'PATCH',
             body: JSON.stringify({ estado })
         });
-        return Response.json(data);
+        return res.json(data);
     } catch (err) {
-        return Response.json({ error: err.message }, { status: 500 });
+        return res.status(500).json({ error: err.message });
     }
-}
+};

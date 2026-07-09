@@ -1,33 +1,33 @@
-import query from './_lib/supabase.js';
+const query = require('./_lib/supabase.js');
 
-export async function GET(request) {
-    try {
-        const { searchParams } = new URL(request.url);
-        let endpoint = 'reportes_ciudadanos?select=*';
-        const estado = searchParams.get('estado');
-        const order = searchParams.get('order');
-        if (estado) endpoint += `&estado=eq.${estado}`;
-        if (order) endpoint += `&order=${order}`;
-        const data = await query(endpoint);
-        return Response.json(data);
-    } catch (err) {
-        return Response.json({ error: err.message }, { status: 500 });
-    }
-}
-
-export async function POST(request) {
-    try {
-        const body = await request.json();
-        const { tipo_problema, comentario, latitud, longitud } = body;
-        if (!tipo_problema || latitud === undefined || longitud === undefined) {
-            return Response.json({ error: 'tipo_problema, latitud and longitud are required' }, { status: 400 });
+module.exports = async function handler(req, res) {
+    if (req.method === 'GET') {
+        try {
+            let endpoint = 'reportes_ciudadanos?select=*';
+            if (req.query.estado) endpoint += '&estado=eq.' + req.query.estado;
+            if (req.query.order) endpoint += '&order=' + req.query.order;
+            const data = await query(endpoint);
+            return res.json(data);
+        } catch (err) {
+            return res.status(500).json({ error: err.message });
         }
-        const data = await query('reportes_ciudadanos', {
-            method: 'POST',
-            body: JSON.stringify({ tipo_problema, comentario, latitud, longitud })
-        });
-        return Response.json(data, { status: 201 });
-    } catch (err) {
-        return Response.json({ error: err.message }, { status: 500 });
     }
-}
+
+    if (req.method === 'POST') {
+        try {
+            const { tipo_problema, comentario, latitud, longitud } = req.body;
+            if (!tipo_problema || latitud === undefined || longitud === undefined) {
+                return res.status(400).json({ error: 'tipo_problema, latitud and longitud are required' });
+            }
+            const data = await query('reportes_ciudadanos', {
+                method: 'POST',
+                body: JSON.stringify({ tipo_problema, comentario, latitud, longitud })
+            });
+            return res.status(201).json(data);
+        } catch (err) {
+            return res.status(500).json({ error: err.message });
+        }
+    }
+
+    return res.status(405).json({ error: 'Method not allowed' });
+};

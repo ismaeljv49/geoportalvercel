@@ -1,24 +1,22 @@
-import query from './_lib/supabase.js';
+const query = require('./_lib/supabase.js');
 
-export async function GET(request) {
-    const { searchParams } = new URL(request.url);
-    const table = searchParams.get('table');
-    const limit = searchParams.get('limit') || '1000';
-    const offset = searchParams.get('offset') || '0';
-    const order = searchParams.get('order');
+module.exports = async function handler(req, res) {
+    const table = req.query.table;
+    const limit = req.query.limit || '1000';
+    const offset = req.query.offset || '0';
+    const order = req.query.order || null;
 
     if (!table) {
-        return Response.json({ error: 'table parameter required' }, { status: 400 });
+        return res.status(400).json({ error: 'table parameter required' });
     }
 
     try {
-        let endpoint = `${table}?select=*&limit=${limit}&offset=${offset}`;
-        if (order) endpoint += `&order=${order}`;
+        let endpoint = table + '?select=*&limit=' + limit + '&offset=' + offset;
+        if (order) endpoint += '&order=' + order;
         const data = await query(endpoint);
-        return Response.json(data, {
-            headers: { 'Cache-Control': 'no-cache' }
-        });
+        res.setHeader('Cache-Control', 'no-cache');
+        return res.json(data);
     } catch (err) {
-        return Response.json({ error: err.message }, { status: 500 });
+        return res.status(500).json({ error: err.message });
     }
-}
+};

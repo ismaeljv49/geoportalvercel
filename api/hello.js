@@ -1,3 +1,3 @@
-export async function GET(request) {
-    return new Response('ok', { status: 200 });
-}
+module.exports = function handler(req, res) {
+    res.status(200).send('ok');
+};
