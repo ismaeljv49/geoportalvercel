@@ -13,10 +13,13 @@ export default async function handler(req, res) {
     try {
         let endpoint = `${table}?select=*&limit=${limit}&offset=${offset}`;
         if (order) endpoint += `&order=${order}`;
+        console.log('Fetching:', endpoint);
+        console.log('URL:', (process.env.SUPABASE_URL || 'NOT SET') + endpoint);
         const data = await query(endpoint);
         res.setHeader('Cache-Control', 'no-cache');
         return res.json(data);
     } catch (err) {
+        console.error('Error:', err.message);
         return res.status(500).json({ error: err.message });
     }
 }
